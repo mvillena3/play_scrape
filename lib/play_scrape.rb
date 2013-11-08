@@ -25,6 +25,8 @@ module PlayScrape
       app_rating = html.css(APP_RATING_CSS_PATH).first
       num_ratings = html.css(APP_NUM_RATINGS_CSS_PATH).first
       icon_url = html.css(APP_ICON_CSS_PATH).first
+
+      # A bit hacky below but it'll do
       installs = html.css(APP_INSTALL_CSS_PATH)[2].text.gsub(",", "").split("-").map(&:to_i)
 
       dev_links = html.css(APP_DEV_URL_CSS_PATH)

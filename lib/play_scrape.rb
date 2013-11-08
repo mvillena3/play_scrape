@@ -1,4 +1,8 @@
 require "play_scrape/version"
+require "play_scrape/app"
+
+require 'typhoeus'
+require 'nokogiri'
 
 module PlayScrape
 
@@ -9,20 +13,37 @@ module PlayScrape
   APP_RATING_CSS_PATH = 'div.score'
   APP_NUM_RATINGS_CSS_PATH = 'span.reviews-num'
   APP_DEV_URL_CSS_PATH = 'a.dev-link'
-  APP_INSTALL_CSS_PATH = 'html body div#wrapper.wrapper-with-footer div#body-content div.details-wrapper div.details-section div.details-section-contents div.meta-info div.content'
+  APP_INSTALL_CSS_PATH = 'div.details-section div.details-section-contents div.meta-info div.content'
 
-  def scrape_app_info_for(package_name)
-    puts "Stuff"
-    # res = Typhoeus.get(PLAY_URL + package_name)
+  def self.scrape_app_info(package_name)
+    res = Typhoeus.get(PLAY_URL + package_name)
 
-    # if res.code == 200
-    #   app_info = Hash.new
-    #   html = Nokogiri::HTML(response.body)
-    #   description = html.css(APP_DESC_CSS_PATH).first
-    #   app_rating = html.css(APP_RATING_CSS_PATH).first
-    #   num_ratings = html.css(APP_NUM_RATINGS_CSS_PATH).first
-    #     
+    if res.code == 200
+      app_info = PlayScrape::AppInfo.new
+      html = Nokogiri::HTML(res.body)
+      description = html.css(APP_DESC_CSS_PATH).first
+      app_rating = html.css(APP_RATING_CSS_PATH).first
+      num_ratings = html.css(APP_NUM_RATINGS_CSS_PATH).first
+      icon_url = html.css(APP_ICON_CSS_PATH).first
+      installs = html.css(APP_INSTALL_CSS_PATH)[2].text.gsub(",", "").split("-").map(&:to_i)
 
-    # end
+      dev_links = html.css(APP_DEV_URL_CSS_PATH)
+      dev_url = String.new
+      if !dev_links.empty? && dev_links.first.text.match(/Visit Developer's Website/)
+        regex = /q=(https?:\/\/[\S]+?)&/
+        dev_url = dev_links.first.attributes['href'].value.match(regex)[1] 
+      end
+
+      app_info.package_name = package_name
+      app_info.description = description.inner_html
+      app_info.rating = app_rating.text.to_f
+      app_info.num_ratings = num_ratings.text.gsub(",", "").to_i
+      app_info.icon_url = icon_url
+      app_info.dev_url = dev_url
+      app_info.min_installs = installs.first
+      app_info.max_installs = installs.last
+
+      app_info
+    end
   end
 end

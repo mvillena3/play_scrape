@@ -12,6 +12,7 @@ module PlayScrape
   APP_INSTALL_CSS_PATH = 'html body div#wrapper.wrapper-with-footer div#body-content div.details-wrapper div.details-section div.details-section-contents div.meta-info div.content'
 
   def scrape_app_info_for(package_name)
+    puts "Stuff"
     # res = Typhoeus.get(PLAY_URL + package_name)
 
     # if res.code == 200

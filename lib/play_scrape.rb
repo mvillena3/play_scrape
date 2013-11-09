@@ -15,6 +15,8 @@ module PlayScrape
   APP_DEV_URL_CSS_PATH = 'a.dev-link'
   APP_INSTALL_CSS_PATH = 'div.details-section div.details-section-contents div.meta-info div.content'
 
+
+  # Returns @app_info of AppInfo class
   def self.scrape_app_info(package_name)
     res = Typhoeus.get(PLAY_URL + package_name)
 
@@ -40,7 +42,7 @@ module PlayScrape
       app_info.description = description.inner_html
       app_info.rating = app_rating.text.to_f
       app_info.num_ratings = num_ratings.text.gsub(",", "").to_i
-      app_info.icon_url = icon_url
+      app_info.icon_url = icon_url.attributes['src'].value
       app_info.dev_url = dev_url
       app_info.min_installs = installs.first
       app_info.max_installs = installs.last

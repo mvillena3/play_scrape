@@ -14,6 +14,7 @@ module PlayScrape
   APP_NUM_RATINGS_CSS_PATH = 'span.reviews-num'
   APP_DEV_URL_CSS_PATH = 'a.dev-link'
   APP_INSTALL_CSS_PATH = 'div.details-section div.details-section-contents div.meta-info div.content'
+  APP_NAME_CSS_PATH = 'div.details-wrapper div.details-info div.info-container div.document-title div'
 
 
   # Returns @app_info of AppInfo class
@@ -23,6 +24,7 @@ module PlayScrape
     if res.code == 200
       app_info = PlayScrape::AppInfo.new
       html = Nokogiri::HTML(res.body)
+      name = html.css(APP_NAME_CSS_PATH).first
       description = html.css(APP_DESC_CSS_PATH).first
       app_rating = html.css(APP_RATING_CSS_PATH).first
       num_ratings = html.css(APP_NUM_RATINGS_CSS_PATH).first
@@ -38,6 +40,7 @@ module PlayScrape
         dev_url = dev_links.first.attributes['href'].value.match(regex)[1] 
       end
 
+      app_info.app_name = name.text
       app_info.package_name = package_name
       app_info.description = description.inner_html
       app_info.rating = app_rating.text.to_f

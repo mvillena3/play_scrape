@@ -1,6 +1,6 @@
 module PlayScrape
   class AppInfo
-    attr_accessor :package_name, :description, :rating, :num_ratings, :dev_url, :icon_url,
+    attr_accessor :app_name, :package_name, :description, :rating, :num_ratings, :dev_url, :icon_url,
       :min_installs, :max_installs
 
     def initialize

@@ -6,6 +6,8 @@ class PlayScrapeTest < Test::Unit::TestCase
   def test_scraping_app_information
     app_info = PlayScrape.scrape_app_info(TEST_PACKAGE)
 
+
+    assert_equal 'FIFA 14 by EA SPORTS™', app_info.app_name
     assert_equal 'com.ea.game.fifa14_na', app_info.package_name, "Package name does not match"
     assert_equal 4.6, app_info.rating, "Play rating does not match"
     assert_equal 500000, app_info.min_installs

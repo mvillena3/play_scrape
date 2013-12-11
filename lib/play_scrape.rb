@@ -13,8 +13,12 @@ module PlayScrape
   APP_RATING_CSS_PATH = 'div.score'
   APP_NUM_RATINGS_CSS_PATH = 'span.reviews-num'
   APP_DEV_URL_CSS_PATH = 'a.dev-link'
-  APP_INSTALL_CSS_PATH = 'div.details-section div.details-section-contents div.meta-info div.content'
   APP_NAME_CSS_PATH = 'div.details-wrapper div.details-info div.info-container div.document-title div'
+  APP_ADDITIONAL_INFO_CSS_PATH = 'div.details-section div.details-section-contents div.meta-info div.content'
+
+  VERSION_REGEX = /\d\.\d(\.\d)?/
+  URL_REGEX = /q=(https?:\/\/[\S]+?)&/
+  INSTALLS_REGEX = /\d+ - \d+/
 
 
   # Returns @app_info of AppInfo class
@@ -31,13 +35,15 @@ module PlayScrape
       icon_url = html.css(APP_ICON_CSS_PATH).first
 
       # A bit hacky below but it'll do
-      installs = html.css(APP_INSTALL_CSS_PATH)[2].text.gsub(",", "").split("-").map(&:to_i)
+      installs_text = html.css(APP_ADDITIONAL_INFO_CSS_PATH)[2].text.strip
+      installs = installs_text.gsub(",", "").split("-").map(&:to_i)  if installs_text.match(INSTALLS_REGEX)
+      version_text = html.css(APP_ADDITIONAL_INFO_CSS_PATH)[3].text.strip
+      version = version_text if version_text.match(VERSION_REGEX)
 
       dev_links = html.css(APP_DEV_URL_CSS_PATH)
-      dev_url = String.new
+      dev_url = ""
       if !dev_links.empty? && dev_links.first.text.match(/Visit Developer's Website/)
-        regex = /q=(https?:\/\/[\S]+?)&/
-        dev_url = dev_links.first.attributes['href'].value.match(regex)[1] 
+        dev_url = dev_links.first.attributes['href'].value.match(URL_REGEX)[1] 
       end
 
       app_info.app_name = name.text
@@ -49,6 +55,7 @@ module PlayScrape
       app_info.dev_url = dev_url
       app_info.min_installs = installs.first
       app_info.max_installs = installs.last
+      app_info.version = version
 
       app_info
     end

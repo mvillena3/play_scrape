@@ -1,7 +1,18 @@
 module PlayScrape
   class AppInfo
-    attr_accessor :app_name, :package_name, :description, :rating, :num_ratings, :dev_url, :icon_url,
-      :min_installs, :max_installs
+    ATTRIBUTES = [
+      :app_name, 
+      :package_name,
+      :description,
+      :rating,
+      :num_ratings,
+      :dev_url,
+      :icon_url,
+      :min_installs,
+      :max_installs,
+      :version
+    ]
+    attr_accessor *ATTRIBUTES
 
     def initialize
     end

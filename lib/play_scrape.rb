@@ -8,7 +8,7 @@ module PlayScrape
 
   PLAY_URL = 'https://play.google.com/store/apps/details?id='
 
-  APP_DESC_CSS_PATH = 'html body div#wrapper.wrapper-with-footer div#body-content div.details-wrapper div.details-section div.details-section-contents div.show-more-content div.app-orig-desc'
+  APP_DESC_CSS_PATH = 'html body div#wrapper.wrapper-with-footer div#body-content div.details-wrapper div.details-section div.details-section-contents div.show-more-content div.id-app-orig-desc'
   APP_ICON_CSS_PATH = 'html body div#wrapper.wrapper-with-footer div#body-content div.details-wrapper div.details-info div.cover-container img.cover-image'
   APP_RATING_CSS_PATH = 'div.score'
   APP_NUM_RATINGS_CSS_PATH = 'span.reviews-num'
@@ -23,7 +23,7 @@ module PlayScrape
 
   # Returns @app_info of AppInfo class
   def self.scrape_app_info(package_name)
-    res = Typhoeus.get(PLAY_URL + package_name)
+    res = self.get_html_page_for(package_name)
 
     if res.code == 200
       app_info = PlayScrape::AppInfo.new
@@ -59,5 +59,9 @@ module PlayScrape
 
       app_info
     end
+  end
+
+  def self.get_html_page_for(package_name)
+    res = Typhoeus.get(PLAY_URL + package_name)
   end
 end

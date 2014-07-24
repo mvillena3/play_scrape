@@ -43,7 +43,7 @@ module PlayScrape
       dev_links = html.css(APP_DEV_URL_CSS_PATH)
       dev_url = ""
       if !dev_links.empty? && dev_links.first.text.match(/Visit Developer's Website/)
-        dev_url = dev_links.first.attributes['href'].value.match(URL_REGEX)[1] 
+        dev_url = dev_links.first.attributes['href'].value.match(URL_REGEX)[1]
       end
 
       app_info.app_name = name.text
@@ -63,5 +63,15 @@ module PlayScrape
 
   def self.get_html_page_for(package_name)
     res = Typhoeus.get(PLAY_URL + package_name)
+  end
+
+  def self.scrape_app_icon(package_name)
+    res = self.get_html_page_for(package_name)
+    if res
+      html = Nokogiri::HTML(res.body)
+      html.css(APP_ICON_CSS_PATH).first.attributes['src'].value
+    else
+      nil
+    end
   end
 end

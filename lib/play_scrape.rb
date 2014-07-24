@@ -69,7 +69,12 @@ module PlayScrape
     res = self.get_html_page_for(package_name)
     if res
       html = Nokogiri::HTML(res.body)
-      html.css(APP_ICON_CSS_PATH).first.attributes['src'].value
+      icon = html.css(APP_ICON_CSS_PATH).first
+      if icon
+        icon.attributes['src'].value
+      else
+        nil
+      end
     else
       nil
     end

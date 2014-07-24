@@ -1,29 +1,22 @@
 # PlayScrape
 
-TODO: Write a gem description
+Very simple scraper for the PlayStore for some essential info.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
     gem 'play_scrape'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install play_scrape
 
 ## Usage
 
-TODO: Write usage instructions here
+    app_info = PlayScrape.scrape_app_info(package_name_of_android_app)
 
-## Contributing
+    app_info.app_name
+    app_info.description
+    app_info.rating
+    app_info.num_ratings
+    app_info.dev_url
+    app_info.icon_url
+    app_info.min_installs
+    app_info.max_installs
+    app_info.version
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
